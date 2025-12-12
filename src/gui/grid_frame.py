@@ -23,5 +23,20 @@ class GridFrame(ttk.Frame):
             bg=self.COLOR_BACKGROUND,
             highlightthickness=0
         )
-        self.canvas.grid(row=0, column=0, sticky="nsew")
+        self.canvas.place(relx=0.5, rely=0.5, anchor="center")
+
+        self.bind("<Configure>", self._on_resize)
+
+    def _on_resize(self, event=None):
+        self.update_idletasks()
+
+        width = self.winfo_width()
+        height = self.winfo_height()
+
+        size = min(width, height)
+
+        if size > 1:
+            self.canvas.config(width=size, height=size)
+
+
 
