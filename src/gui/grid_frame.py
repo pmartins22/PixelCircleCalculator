@@ -38,7 +38,7 @@ class GridFrame(ttk.Frame):
 
     def _draw_table(self, table=None):
         if table is None:
-            table = [[0]*10 for _ in range(10)]
+            table = [['0']*10 for _ in range(10)]
 
         self.canvas.delete("all")
 
