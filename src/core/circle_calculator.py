@@ -12,7 +12,6 @@ class CircleCalculator:
 
     def _setup(self):
         self.table = [['0'] * 10 for _ in range(10)]
-        self.set_radius(3)
 
     def set_radius(self, radius):
         if radius < 1:
@@ -22,31 +21,29 @@ class CircleCalculator:
 
         self.table = [['0'] * grids_number for _ in range(grids_number)]
 
-        self._apply_skeleton(radius)
-        self._print_table()
+        self._apply_skeleton_tiles(radius)
 
-    def _apply_skeleton(self, radius):
+    def _apply_skeleton_tiles(self, radius):
         center = self._find_center()
-        cx, cy = center[0], center[1]
 
-        self.table[cy][cx] = '1'
+        self.table[center][center] = '1'
 
         if radius == 1:
             return
 
-        for i in range(cx - (radius - 1), cx + (radius - 1) + 1):
-            if self.table[i][cy] != '1':
-                self.table[i][cy] = '2'
+        for i in range(center - (radius - 1), center + (radius - 1) + 1):
+            if self.table[i][center] != '1':
+                self.table[i][center] = '2'
 
-            if self.table[cx][i] != '1':
-                self.table[cx][i] = '2'
+            if self.table[center][i] != '1':
+                self.table[center][i] = '2'
 
     def _find_center(self):
         size = len(self.table)
         center = size // 2
-        return [center, center]
+        return center
 
-    def _print_table(self):
+    def print_table(self):
         for col in range(len(self.table)):
             for row in range(len(self.table[col])):
                 print(self.table[col][row], end=' ')
