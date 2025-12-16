@@ -12,8 +12,6 @@ class CircleCalculator:
 
     def _setup(self):
         self.table = [['0'] * 10 for _ in range(10)]
-        self.set_radius(3)
-        self.print_table()
 
     def set_radius(self, radius):
         if radius < 1:
