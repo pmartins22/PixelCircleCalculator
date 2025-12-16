@@ -12,7 +12,7 @@ class CircleCalculator:
 
     def _setup(self):
         self.table = [['0'] * 10 for _ in range(10)]
-        self.set_radius(1)
+        self.set_radius(3)
         self.print_table()
 
     def set_radius(self, radius):
@@ -47,10 +47,12 @@ class CircleCalculator:
 
         for y in range(len(self.table)):
             for x in range(len(self.table[y])):
-                if self._pixel_intercepts_circle(radius, x, y) and self.table[y][x] != '1' and self.table[y][x] != '2':
+                if self._tile_intercepts_circle(radius, x, y) and self.table[y][x] != '1' and self.table[y][x] != '2':
                     self.table[y][x] = '3'
 
-    def _pixel_intercepts_circle(self, radius, px, py):
+        self._trim_inner_corner_tiles()
+
+    def _tile_intercepts_circle(self, radius, px, py):
         center = self._find_center(as_float=True)
         radius = radius - 1
         # Calculate smaller x distance to center
@@ -103,6 +105,41 @@ class CircleCalculator:
         larger_dist_to_center = math.dist([center, center], [larger_point_x, larger_point_y])
 
         return smaller_dist_to_center < radius < larger_dist_to_center
+
+    def _trim_inner_corner_tiles(self):
+        for y in range(len(self.table)):
+            for x in range(len(self.table[y])):
+                quadrant = self._tile_quadrant(x, y)
+
+                if quadrant == 1:
+                    if self.table[x][y] == '3' and self.table[x + 1][y] == '3' and self.table[x][y - 1] == '3':
+                        self.table[x][y] = '0'
+                elif quadrant == 2:
+                    if self.table[x][y] == '3' and self.table[x - 1][y] == '3' and self.table[x][y - 1] == '3':
+                        self.table[x][y] = '0'
+                elif quadrant == 3:
+                    if self.table[x][y] == '3' and self.table[x - 1][y] == '3' and self.table[x][y + 1] == '3':
+                        self.table[x][y] = '0'
+                elif quadrant == 4:
+                    if self.table[x][y] == '3' and self.table[x + 1][y] == '3' and self.table[x][y + 1] == '3':
+                        self.table[x][y] = '0'
+
+
+    def _tile_quadrant(self, x, y):
+        center = self._find_center()
+
+        if x > center > y:
+            return 1  # Top-right
+        elif x < center and y < center:
+            return 2  # Top-left
+        elif x < center < y:
+            return 3  # Bottom-left
+        elif x > center < y:
+            return 4  # Bottom-right
+        else:
+            return 0  # On an axis
+
+
 
     def _find_center(self, as_float=False):
         size = len(self.table)
