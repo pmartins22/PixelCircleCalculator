@@ -51,6 +51,7 @@ class CircleCalculator:
                     self.table[y][x] = '3'
 
         self._trim_inner_corner_tiles()
+        self._replace_skeleton_corner_tiles(radius)
 
     def _tile_intercepts_circle(self, radius, px, py):
         center = self._find_center(as_float=True)
@@ -124,6 +125,19 @@ class CircleCalculator:
                     if self.table[x][y] == '3' and self.table[x + 1][y] == '3' and self.table[x][y + 1] == '3':
                         self.table[x][y] = '0'
 
+    def _replace_skeleton_corner_tiles(self, radius):
+        center = self._find_center()
+        radius = radius - 1
+        tiles_to_replace = [
+            [center - radius, center],
+            [center + radius, center],
+            [center, center - radius],
+            [center, center + radius],
+        ]
+
+        for tile in tiles_to_replace:
+            x, y = tile
+            self.table[x][y] = '3'
 
     def _tile_quadrant(self, x, y):
         center = self._find_center()
@@ -138,8 +152,6 @@ class CircleCalculator:
             return 4  # Bottom-right
         else:
             return 0  # On an axis
-
-
 
     def _find_center(self, as_float=False):
         size = len(self.table)
